@@ -1,6 +1,26 @@
 <template>
   <div class="app">
     <div class="container">
+      <div class="dashboard">
+        <div>
+          <span>
+            <font-icon icon="calendar-alt" />
+          </span>
+          <h3>{{ countAll }}</h3>
+        </div>
+        <div>
+          <span>
+            <font-icon icon="check" />
+          </span>
+          <h3>{{ countComplete }}</h3>
+        </div>
+        <div>
+          <span>
+            <font-icon icon="times" />
+          </span>
+          <h3>{{ countToDo }}</h3>
+        </div>
+      </div>
       <form @submit.prevent="addList">
         <div class="form-control">
           <input v-model="userInput.title" type="text" placeholder="Title" />
@@ -26,7 +46,7 @@
 </template>
 
 <script>
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
 import ListItem from './components/ListItem.vue';
 
 export default {
@@ -71,6 +91,17 @@ export default {
       userInput.content = '';
     };
 
+    // dashboard
+    const countAll = computed(() => list.value.length);
+
+    const countComplete = computed(
+      () => list.value.filter((ele) => ele.complete === true).length,
+    );
+
+    const countToDo = computed(
+      () => list.value.filter((ele) => ele.complete === false).length,
+    );
+
     return {
       list,
       userInput,
@@ -78,6 +109,9 @@ export default {
       complete,
       remove,
       reset,
+      countAll,
+      countComplete,
+      countToDo,
     };
   },
 };
@@ -85,6 +119,8 @@ export default {
 
 <style lang="scss" scoped>
 $blue: #0b85fe;
+$red: #ff553a;
+$green: #198755;
 
 .app {
   padding-top: 3rem;
@@ -159,6 +195,60 @@ $blue: #0b85fe;
     border: none;
     font-size: 1.2rem;
     font-weight: 500;
+  }
+}
+
+.dashboard {
+  display: flex;
+  margin-bottom: 1rem;
+  gap: 1rem;
+  color: #fff;
+
+  div {
+    flex: 1;
+    min-height: 100px;
+    background-color: #1f1f1f;
+    border-radius: 0.5rem;
+    padding: 0.6rem;
+    display: inline-flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    span {
+      display: inline-block;
+      border-radius: 50%;
+      padding: 0.6rem;
+      clip-path: circle();
+    }
+
+    h3 {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    &:nth-of-type(1) {
+      span {
+        background-color: $blue;
+      }
+    }
+
+    &:nth-of-type(2) {
+      span {
+        background-color: $green;
+      }
+    }
+
+    &:nth-of-type(3) {
+      span {
+        background-color: $red;
+      }
+    }
   }
 }
 </style>
